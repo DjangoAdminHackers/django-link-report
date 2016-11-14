@@ -1,8 +1,8 @@
-from .model_mixins import AdminUrlMixin
 from django.contrib.redirects.models import Redirect
 from django.db import models
 from django.template.defaultfilters import truncatechars
 from django.utils.safestring import mark_safe
+from ixxy_admin_utils.model_mixins import AdminUrlMixin
 
 
 def url_to_link_html(url):
@@ -12,9 +12,9 @@ def url_to_link_html(url):
 class Sentry404Issue(AdminUrlMixin, models.Model):
     
     url = models.URLField(max_length=2048)
-    first_seen = models.DateTimeField()  # u'2016-03-21T22:34:26Z',
-    last_seen = models.DateTimeField()  # u'2016-11-08T22:22:05Z',
-    sentry_id = models.PositiveIntegerField()  # u'http://138.68.156.186/ixxy/lily/issues/5502/',
+    first_seen = models.DateTimeField()
+    last_seen = models.DateTimeField()
+    sentry_id = models.PositiveIntegerField()
     
     @property
     def link_html(self):
@@ -42,11 +42,11 @@ class Sentry404Event(AdminUrlMixin, models.Model):
     
     def __unicode__(self):
         return u'{} on {}'.format(self.issue.url, self.date_created)
-    
-    
+
+
 class RedirectFacade(AdminUrlMixin, Redirect):
     
-    """Simplified Redirect Model """
+    """Simplified Redirect proxy model to allow a nicer UI"""
     
     class Meta:
         verbose_name = "Redirect"

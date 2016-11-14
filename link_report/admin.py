@@ -1,17 +1,16 @@
 from .link_report_settings import BASE_URL
-from .admin_mixins import RedirectableAdmin  # TODO move into it's own package
-from .list_filters import makeRangeFieldListFilter  # TODO move into it's own package
 from datetime import timedelta
-
 from django import forms
 from django.contrib import admin
 from django.contrib.sites.models import Site
 from django.db.models import Count
 from django.template.defaultfilters import truncatechars
 from django.utils.safestring import mark_safe
-
+from ixxy_admin_utils.admin_mixins import RedirectableAdmin
+from ixxy_admin_utils.list_filters import makeRangeFieldListFilter
 from .list_filters import UrlListFilter
 from .models import Sentry404Issue, Sentry404Event, RedirectFacade
+
 
 customDateRangeFilter = makeRangeFieldListFilter([
     ('Last 7 days', timedelta(days=-7), timedelta(days=0)),
