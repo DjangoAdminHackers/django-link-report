@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import requests
 from django.utils.dateparse import parse_datetime
 from .link_report_settings import API_BASE_URL, PROJECT_SLUG, AUTH_TOKEN, ORGANIZATION_SLUG
@@ -49,11 +51,15 @@ def update_sentry_404s():
         )
         
         for event in events:
-            headers = {x[0]: x[1] for x in event['entries'][1]['data']['headers']}
             tags = {x['key']: x['value'] for x in event['tags']}
-            
-            referer = headers.get('Referer', None)
             browser = tags.get('browser', None)
+            for entry in event['entries']:
+                if entry['data'].get('headers', False):
+                    headers = {x[0]: x[1] for x in entry['data']['headers']}
+                    referer = headers.get('Referer', None)
+                    break
+            else:
+                referer = None
             if browser:
                 parts = browser.split()
                 if len(parts) > 1:
