@@ -41,10 +41,10 @@ def update_sentry_404s():
         headers = {'Authorization': 'Bearer ' + AUTH_TOKEN}
         events_response = requests.get(url, headers=headers)
         events = events_response.json()
-        
         issue_instance = Sentry404Issue.objects.create(
             sentry_id=issue['id'],
-            url=issue['culprit'],
+            # issue['url'] doesn't have the querystring so use the title instead
+            url=issue['metadata']['title'].replace('Page Not Found: ', ''),
             first_seen=parse_datetime(issue['firstSeen']),
             last_seen=parse_datetime(issue['lastSeen']),
             # count=issue['count'],
