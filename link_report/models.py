@@ -23,6 +23,9 @@ class Sentry404Issue(AdminUrlMixin, models.Model):
     def __unicode__(self):
         return self.url
 
+    class Meta:
+        verbose_name = "404 Issue"
+
 
 class Sentry404Event(AdminUrlMixin, models.Model):
     
@@ -42,6 +45,9 @@ class Sentry404Event(AdminUrlMixin, models.Model):
     
     def __unicode__(self):
         return u'{} on {}'.format(self.issue.url, self.date_created)
+    
+    class Meta:
+        verbose_name = "404 Report"
 
 
 class RedirectFacade(AdminUrlMixin, Redirect):
@@ -49,5 +55,5 @@ class RedirectFacade(AdminUrlMixin, Redirect):
     """Simplified Redirect proxy model to allow a nicer UI"""
     
     class Meta:
-        verbose_name = "Redirect"
+        verbose_name = "404 Redirect"
         proxy = True

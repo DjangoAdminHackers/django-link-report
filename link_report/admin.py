@@ -53,13 +53,15 @@ class Sentry404IssueAdmin(admin.ModelAdmin):
                     <td>Last seen</td><td>Count</td><td>Source</td>
                 </tr>
             </thead>""")
-        html += mark_safe(
+        html += mark_safe(  # TODO Is mark_safe really safe here?
             u''.join(
                 [
-                    u'<tr><td>{}<td>{}</td><td>{}</td></tr>'.format(
+                    u'<tr><td>{}<td>{}</td><td><a href="{}" target="_blank" title="{}">{}</a></td></tr>'.format(
                         sources[x]['date_created'].strftime('%e/%m/%y'),
                         sources[x]['count'],
-                        truncatechars(x, 64),
+                        x,
+                        x,
+                        truncatechars(x, 40),
                     )
                     for x in sorted(sources.iterkeys())
                 ]
