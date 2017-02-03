@@ -8,13 +8,31 @@ from .models import Sentry404Event, Sentry404Issue
 
 
 IGNORE_URLS = [
-
+    
+    '+%20$link.attr',
+    
     '*.php*',
+    '*.asp*',
+    '*.htm*',
+    '*.jsp*',
+
+    '*/editor/editor/',
+    '*/ckeditor/editor/',
+    '*/fckeditor/editor/',
+    '*/fck/editor/',
+    '*/Fckeditornew/editor/',
+    '*/Fckeditorold/editor/',
+    '*/FCKeditor/editor/',
+    '*/Fckeditornew/editor/',
+    '*/Fckeditorold/editor/',
+
     '*/tiny_mce.js/',
     '*/uploadify.swf/',
+
     '*/InstallWizard.aspx/*',
     '*/phpmyadmin/*',
     
+    '/.git/',
     '/a.attr/',
     '/android/',
     '/administrator/',
@@ -54,7 +72,9 @@ ACCEPT_USER_AGENTS = [
 
 def check_issue_is_valid(issue_params):
     invalid = False
-    invalid = invalid or any(fnmatch(issue_params['url'], pat) for pat in IGNORE_URLS)
+    url = issue_params['url'].replace(link_report_settings.BASE_URL, '')  # Strip host
+    invalid = invalid or any(fnmatch(url, pat) for pat in IGNORE_URLS)
+    print invalid, issue_params['url']
     return not invalid
 
 
@@ -88,7 +108,7 @@ def update_sentry_404s():
     issues_response = requests.get(api_url, headers=headers)
     issues = issues_response.json()
     issues = sorted(issues, key=lambda k: k['lastSeen'])
-    next_page_url = issues_response.headers['Link'].split(',')[1].split(';')[0][2:-1]
+    next_page_url = issues_response.headers['Link'].split(',')[1].split(';')[0][2:-1]  # TODO
     
     for issue in issues:
         

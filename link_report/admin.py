@@ -78,7 +78,7 @@ class Sentry404IssueAdmin(admin.ModelAdmin):
     display_events.admin_order_field = 'event_count'
     
     def display_redirect(self, obj):
-        old_path = obj.url.replace(link_report_settings.BASE_URL, '')
+        old_path = obj.url.replace(link_report_settings.BASE_URL, '/')
         try:
             redirect = RedirectFacade.objects.get(old_path=old_path)
             return mark_safe(
