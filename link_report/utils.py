@@ -74,7 +74,6 @@ def check_issue_is_valid(issue_params):
     invalid = False
     url = issue_params['url'].replace(link_report_settings.BASE_URL, '')  # Strip host
     invalid = invalid or any(fnmatch(url, pat) for pat in IGNORE_URLS)
-    print invalid, issue_params['url']
     return not invalid
 
 
