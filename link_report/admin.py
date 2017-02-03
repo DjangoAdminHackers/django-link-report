@@ -8,7 +8,7 @@ from django.template.defaultfilters import truncatechars
 from django.utils.safestring import mark_safe
 from ixxy_admin_utils.admin_mixins import RedirectableAdmin
 from ixxy_admin_utils.list_filters import makeRangeFieldListFilter
-from .list_filters import UrlListFilter
+from .list_filters import UrlListFilter, RedirectedListFilter
 from .models import Sentry404Issue, Sentry404Event, RedirectFacade
 
 
@@ -24,6 +24,7 @@ class Sentry404IssueAdmin(admin.ModelAdmin):
     list_display = ['url', 'first_seen', 'last_seen', 'display_events', 'display_redirect']
     list_filter = [
         UrlListFilter,
+        RedirectedListFilter,
         ('first_seen', customDateRangeFilter),
         ('last_seen', customDateRangeFilter),
     ]

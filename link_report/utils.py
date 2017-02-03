@@ -14,10 +14,22 @@ IGNORE_URLS = [
     '*/uploadify.swf/',
     '*/InstallWizard.aspx/*',
     '*/phpmyadmin/*',
-    # TODO Strip domain and do these properly
-    '*/wp/',
-    '*/wordpress/',
-    '*/apple-touch-icon-*.png/'
+    
+    '/a.attr/',
+    '/android/',
+    '/administrator/',
+    '/apple-touch-icon-*.png/',
+    '/feed/',
+    '/ios/',
+    '/js/mage/cookies.js/'
+    '/mobile-app/',
+    '/mysql/',
+    '/rss/',
+    '/sql/',
+    '/user/register/',
+    '/wordpress/',
+    '/wp/',
+    '/wp-admin/',
 ]
 
 ACCEPT_USER_AGENTS = [
