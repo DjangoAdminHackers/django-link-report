@@ -110,22 +110,26 @@ def update_sentry_404s():
     issues = sorted(issues, key=lambda k: k['lastSeen'])
     next_page_url = issues_response.headers['Link'].split(',')[1].split(';')[0][2:-1]  # TODO
     for issue in issues:
-        time.sleep(1)  # If we request too frequent, it can some times bring down a sentry instance
+        time.sleep(0.5)  # If we request too frequent, it can some times bring down a sentry instance
         api_url = u'{}issues/{}/events/'.format(
             link_report_settings.API_BASE_URL,
             issue['id']
         )
         
         headers = {'Authorization': 'Bearer ' + link_report_settings.AUTH_TOKEN}
-        events = ['', ]
+        events = []
         while not (events and 'tags' in events[0]):
             events_response = requests.get(api_url, headers=headers)
             events = events_response.json()
+            if events and 'detail' in events and events.get('detail', None) == 'Internal Error':
+                events = None
+                time.sleep(60)
+
             if not (events and 'tags' in events[0]):
-                print 'retrying after 3 seconds. ', events
-                time.sleep(3)
+                print 'retrying'
+                time.sleep(60)
                 continue
-        
+
         # Issue 'culprit' doesn't include query strings
         # However the url we extract from the issue title is truncated if too long
         # The best we can do is pick the longer of the two:
