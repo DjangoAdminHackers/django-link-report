@@ -117,7 +117,7 @@ def update_sentry_404s():
         )
         
         headers = {'Authorization': 'Bearer ' + link_report_settings.AUTH_TOKEN}
-        events = ['', ]
+        events = None
         while not events:
             events_response = requests.get(api_url, headers=headers)
             events = events_response.json()
