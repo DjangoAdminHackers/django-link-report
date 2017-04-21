@@ -3,6 +3,7 @@ from pprint import pprint
 
 from link_report import link_report_settings
 import requests
+import time
 from django.utils.dateparse import parse_datetime
 from .models import Sentry404Event, Sentry404Issue
 
@@ -108,17 +109,22 @@ def update_sentry_404s():
     issues = issues_response.json()
     issues = sorted(issues, key=lambda k: k['lastSeen'])
     next_page_url = issues_response.headers['Link'].split(',')[1].split(';')[0][2:-1]  # TODO
-    
     for issue in issues:
-        
+        time.sleep(1)  # If we request too frequent, it can some times bring down a sentry instance
         api_url = u'{}issues/{}/events/'.format(
             link_report_settings.API_BASE_URL,
             issue['id']
         )
         
         headers = {'Authorization': 'Bearer ' + link_report_settings.AUTH_TOKEN}
-        events_response = requests.get(api_url, headers=headers)
-        events = events_response.json()
+        events = ['', ]
+        while not events:
+            events_response = requests.get(api_url, headers=headers)
+            events = events_response.json()
+            if not events:
+                print 'retrying after 3 seconds. ', events
+                time.sleep(3)
+                continue
         
         # Issue 'culprit' doesn't include query strings
         # However the url we extract from the issue title is truncated if too long
