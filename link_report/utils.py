@@ -117,11 +117,11 @@ def update_sentry_404s():
         )
         
         headers = {'Authorization': 'Bearer ' + link_report_settings.AUTH_TOKEN}
-        events = None
-        while not events:
+        events = ['', ]
+        while not (events and 'tags' in events[0]):
             events_response = requests.get(api_url, headers=headers)
             events = events_response.json()
-            if not events:
+            if not (events and 'tags' in events[0]):
                 print 'retrying after 3 seconds. ', events
                 time.sleep(3)
                 continue
