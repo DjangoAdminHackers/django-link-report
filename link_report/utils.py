@@ -168,7 +168,8 @@ def update_sentry_404s():
                 if len(request_uri):
                     issue_params['url'] = request_uri
                 else:
-                    raise Exception("No Forwarded-Request-Uri found in headers")
+                    if not link_report_settings.IGNORE_MISSING_FORWARDED_REQUEST_URI:
+                        raise Exception("No Forwarded-Request-Uri found in headers")
                 # If we wanted just the querystring: event['entries'][1]['data']['query']
 
                 referer_domain = None
