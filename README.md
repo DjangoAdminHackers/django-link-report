@@ -7,15 +7,13 @@ Extracts Django 404 reports from Sentry and displays them in a form that helps a
 
 ## Installation
 
-Assumes Django 1.8+ and Raven are installed. Has a built-in admin panel that works with django-admin-tools but can easily be adapted if you don't use that (although you should because it's great). 
-
-The only other requirement is the requests library. If you install via pip then setup.py should handle this for you
+Assumes Django 1.8+ and Raven are installed. The only other requirement is the requests library. If you install via pip then setup.py should handle this for you
 
 ## Warning
 
 Normal installation via pip is untested. We install via pip -e [github repo url] which does work. If someone wants to test and fix setup.py then pull requests are welcome.
 
-Just install normally
+After installing to your virtualenv, add the settings below and add link_report to installed apps.
 
 ## Example Settings
 
