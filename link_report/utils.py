@@ -120,7 +120,13 @@ def update_sentry_404s():
         events = []
         while not (events and 'tags' in events[0]):
             events_response = requests.get(api_url, headers=headers)
-            events = events_response.json()
+            try:
+                events = events_response.json()
+            except ValueError:  # ValueError("No JSON object could be decoded")
+                # wait a bit and retry, see if it recovers
+                events = None
+                time.sleep(60)
+
             if events and 'detail' in events and events.get('detail', None) == 'Internal Error':
                 events = None
                 time.sleep(60)
