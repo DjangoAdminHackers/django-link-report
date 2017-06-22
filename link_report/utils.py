@@ -74,6 +74,8 @@ ACCEPT_USER_AGENTS = [
 def check_issue_is_valid(issue_params):
     invalid = False
     url = issue_params['url'].replace(link_report_settings.BASE_URL, '')  # Strip host
+    if not url.startswith('/'):
+        url = '/{}'.format(url)
     invalid = invalid or any(fnmatch(url, pat) for pat in IGNORE_URLS)
     return not invalid
 
