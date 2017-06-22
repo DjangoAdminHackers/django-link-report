@@ -13,7 +13,21 @@ Assumes Django 1.8+ and Raven are installed. The only other requirement is the r
 
 Normal installation via pip is untested. We install via pip -e [github repo url] which does work. If someone wants to test and fix setup.py then pull requests are welcome.
 
-After installing to your virtualenv, add the settings below and add link_report to installed apps.
+After installing to your virtualenv, add the settings below and add link_report to installed apps. You'll need to also ensure contrib.redirects is active.
+
+I'm working on a nice dashboard module for djano admin tools but in the meantime I just have:
+
+    self.children.append(modules.ModelList(
+        _('Link Report'),
+        models=(
+            'link_report.models.RedirectFacade',
+            'link_report.models.Sentry404Issue',
+        ),
+    ))
+    
+If you're not using django admin tools then do whatever archaic thing people do with their Django admin index screen nowadays.
+
+RedirectFacade is just a thin wrapper around contrib.redirect.Redirect to allow us to hide site and old_path fields, so it's simpler and suited specifically to the task at hand
 
 ## Example Settings
 
