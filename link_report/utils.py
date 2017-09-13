@@ -10,7 +10,8 @@ from .models import Sentry404Event, Sentry404Issue
 
 IGNORE_URLS = [
     
-    '+%20$link.attr',
+    "*$link.attr('",
+    '*/tel:*',
     
     '*.php*',
     '*.asp*',
@@ -32,12 +33,14 @@ IGNORE_URLS = [
 
     '*/InstallWizard.aspx/*',
     '*/phpmyadmin/*',
-    
+
+    '/&nx=CLICK_X&ny=CLICK_Y*',
     '/.git/',
     '/a.attr/',
     '/android/',
     '/administrator/',
     '/apple-touch-icon-*.png/',
+    '/components/com_content/metadata.xml/',
     '/feed/',
     '/ios/',
     '/js/mage/cookies.js/'
@@ -45,10 +48,13 @@ IGNORE_URLS = [
     '/mysql/',
     '/rss/',
     '/sql/',
+    '/typo3/',
     '/user/register/',
     '/wordpress/',
     '/wp/',
     '/wp-admin/',
+    '/wp-content/*',
+    '/wp-includes/*',
 ]
 
 ACCEPT_USER_AGENTS = [
