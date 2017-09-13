@@ -5,8 +5,7 @@ from link_report import link_report_settings
 import requests
 import time
 from django.utils.dateparse import parse_datetime
-from .models import Sentry404Event, Sentry404Issue
-
+from .models import Sentry404Event, Sentry404Issue, IgnoredUrl
 
 IGNORE_URLS = [
     
@@ -77,12 +76,12 @@ ACCEPT_USER_AGENTS = [
 ]
 
 
-def check_issue_is_valid(issue_params):
+def check_issue_is_valid(issue_params, ignored_urls):
     invalid = False
     url = issue_params['url'].replace(link_report_settings.BASE_URL, '')  # Strip host
     if not url.startswith('/'):
         url = '/{}'.format(url)
-    invalid = invalid or any(fnmatch(url, pat) for pat in IGNORE_URLS)
+    invalid = invalid or any(fnmatch(url, pat) for pat in ignored_urls)
     return not invalid
 
 
@@ -161,8 +160,9 @@ def update_sentry_404s():
             first_seen=parse_datetime(issue['firstSeen']),
             last_seen=parse_datetime(issue['lastSeen']),
         )
-        
-        if check_issue_is_valid(issue_params):
+
+        ignored_urls = IGNORE_URLS + list(IgnoredUrl.objects.all().values_list('url', flat=True))
+        if check_issue_is_valid(issue_params, ignored_urls):
 
             event_params_list = []
             for event in events:

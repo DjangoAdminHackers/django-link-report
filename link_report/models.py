@@ -50,6 +50,14 @@ class Sentry404Event(AdminUrlMixin, models.Model):
         verbose_name = "404 Report"
 
 
+class IgnoredUrl(AdminUrlMixin, models.Model):
+
+    url = models.CharField(max_length=512)
+
+    def __unicode__(self):
+        return self.url
+
+
 class RedirectFacade(AdminUrlMixin, Redirect):
     
     """Simplified Redirect proxy model to allow a nicer UI"""

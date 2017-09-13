@@ -9,8 +9,7 @@ from django.utils.safestring import mark_safe
 from ixxy_admin_utils.admin_mixins import RedirectableAdmin
 from ixxy_admin_utils.list_filters import makeRangeFieldListFilter
 from .list_filters import UrlListFilter, RedirectedListFilter
-from .models import Sentry404Issue, Sentry404Event, RedirectFacade
-
+from .models import Sentry404Issue, Sentry404Event, RedirectFacade, IgnoredUrl
 
 customDateRangeFilter = makeRangeFieldListFilter([
     ('Last 7 days', timedelta(days=-7), timedelta(days=0)),
@@ -131,6 +130,12 @@ class Sentry404EventAdmin(admin.ModelAdmin):
     
     display_url.allow_tags = True
     display_url.short_description = 'Url'
+
+
+@admin.register(IgnoredUrl)
+class IgnoredUrlAdmin(admin.ModelAdmin):
+    list_display = ['url',]
+    search_fields = ['url',]
 
 
 @admin.register(RedirectFacade)
