@@ -76,12 +76,12 @@ ACCEPT_USER_AGENTS = [
 ]
 
 
-def check_issue_is_valid(issue_params, ignored):
+def check_issue_is_valid(issue_params, ignored_urls):
     invalid = False
     url = issue_params['url'].replace(link_report_settings.BASE_URL, '')  # Strip host
     if not url.startswith('/'):
         url = '/{}'.format(url)
-    invalid = invalid or any(fnmatch(url, pat) for pat in ignored)
+    invalid = invalid or any(fnmatch(url, pat) for pat in ignored_urls)
     return not invalid
 
 
@@ -116,6 +116,7 @@ def update_sentry_404s():
     issues = issues_response.json()
     issues = sorted(issues, key=lambda k: k['lastSeen'])
     next_page_url = issues_response.headers['Link'].split(',')[1].split(';')[0][2:-1]  # TODO
+    ignored_urls = IGNORE_URLS + list(IgnoredUrl.objects.all().values_list('url', flat=True))
     for issue in issues:
         time.sleep(0.5)  # If we request too frequent, it can some times bring down a sentry instance
         api_url = u'{}issues/{}/events/'.format(
@@ -161,8 +162,7 @@ def update_sentry_404s():
             last_seen=parse_datetime(issue['lastSeen']),
         )
 
-        ignored_urls = IGNORE_URLS + list(IgnoredUrl.objects.all().values_list('url', flat=True))
-        if check_issue_is_valid(issue_params, ignored):
+        if check_issue_is_valid(issue_params, ignored_urls):
 
             event_params_list = []
             for event in events:
