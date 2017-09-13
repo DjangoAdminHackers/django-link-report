@@ -9,7 +9,7 @@ from .models import Sentry404Event, Sentry404Issue, IgnoredUrl
 
 IGNORE_URLS = [
     
-    "*$link.attr('",
+    "*link.attr(*",
     '*/tel:*',
     
     '*.php*',
@@ -76,12 +76,12 @@ ACCEPT_USER_AGENTS = [
 ]
 
 
-def check_issue_is_valid(issue_params, ignored_urls):
+def check_issue_is_valid(issue_params, ignored):
     invalid = False
     url = issue_params['url'].replace(link_report_settings.BASE_URL, '')  # Strip host
     if not url.startswith('/'):
         url = '/{}'.format(url)
-    invalid = invalid or any(fnmatch(url, pat) for pat in ignored_urls)
+    invalid = invalid or any(fnmatch(url, pat) for pat in ignored)
     return not invalid
 
 
@@ -162,7 +162,7 @@ def update_sentry_404s():
         )
 
         ignored_urls = IGNORE_URLS + list(IgnoredUrl.objects.all().values_list('url', flat=True))
-        if check_issue_is_valid(issue_params, ignored_urls):
+        if check_issue_is_valid(issue_params, ignored):
 
             event_params_list = []
             for event in events:
