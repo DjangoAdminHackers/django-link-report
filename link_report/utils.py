@@ -4,6 +4,7 @@ from pprint import pprint
 from link_report import link_report_settings
 import requests
 import time
+from urllib import unquote_plus
 from django.utils.dateparse import parse_datetime
 from .models import Sentry404Event, Sentry404Issue, IgnoredUrl
 
@@ -238,6 +239,7 @@ def update_sentry_404s():
             
             if event_params_list:
                 # Only create issue if it has some valid events
+                issue_params['url'] = unquote_plus(issue_params['url']) 
                 issue_instance = Sentry404Issue.objects.create(**issue_params)
                 Sentry404Event.objects.bulk_create(
                     [Sentry404Event(issue=issue_instance, **params) for params in event_params_list]
