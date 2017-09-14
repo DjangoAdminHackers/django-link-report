@@ -3,6 +3,7 @@ from datetime import timedelta
 from django import forms
 from django.contrib import admin
 from django.contrib.sites.models import Site
+from django.core.exceptions import PermissionDenied
 from django.db.models import Count
 from django.template.defaultfilters import truncatechars
 from django.utils.safestring import mark_safe
@@ -28,7 +29,28 @@ class Sentry404IssueAdmin(admin.ModelAdmin):
         ('last_seen', customDateRangeFilter),
     ]
     search_fields = ('url',)
-    
+    actions = ['ignore_issues']
+
+    def ignore_issues(self, request, queryset):
+        """
+        ignore Sentry404Issues
+        """
+        if not request.user.is_staff:
+            raise PermissionDenied
+        count = queryset.count()
+        for issue in queryset:
+            if not IgnoredUrl.objects.filter(url=issue.url).exists():
+                IgnoredUrl.objects.create(url=issue.url)
+            issue.events.all().delete()
+            issue.delete()
+        if count == 1:
+            message_bit = "1 issue was"
+        elif count > 1:
+            message_bit = "%s issues were" % count
+        self.message_user(request, "%s successfully marked as ignored." % message_bit)
+
+    ignore_issues.short_description = "Ignore"
+
     def get_queryset(self, request):
         qs = super(Sentry404IssueAdmin, self).get_queryset(request)
         return qs.annotate(event_count=Count('events'))
