@@ -114,6 +114,25 @@ def update_sentry_404s():
     )
     headers = {'Authorization': 'Bearer ' + link_report_settings.AUTH_TOKEN}
     issues_response = requests.get(api_url, headers=headers)
+    issues = []
+    while not (issues and 'lastSeen' in issues[0]):
+        issues_response = requests.get(api_url, headers=headers)
+        try:
+            issues = issues_response.json()
+        except ValueError:  # ValueError("No JSON object could be decoded")
+            # wait a bit and retry, see if it recovers
+            issues = None
+            time.sleep(60)
+
+        if issues and 'detail' in issues and issues.get('detail', None) == 'Internal Error':
+            issues = None
+            time.sleep(60)
+
+        if not (issues and 'lastSeen' in issues[0]):
+            print 'retrying'
+            time.sleep(60)
+            continue
+
     issues = issues_response.json()
     issues = sorted(issues, key=lambda k: k['lastSeen'])
     next_page_url = issues_response.headers['Link'].split(',')[1].split(';')[0][2:-1]  # TODO
@@ -239,7 +258,7 @@ def update_sentry_404s():
             
             if event_params_list:
                 # Only create issue if it has some valid events
-                issue_params['url'] = unquote_plus(issue_params['url']) 
+                issue_params['url'] = unquote_plus(issue_params['url'])
                 issue_instance = Sentry404Issue.objects.create(**issue_params)
                 Sentry404Event.objects.bulk_create(
                     [Sentry404Event(issue=issue_instance, **params) for params in event_params_list]
