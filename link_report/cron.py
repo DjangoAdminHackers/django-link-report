@@ -12,6 +12,7 @@ from link_report.utils import update_sentry_404s
 class RunUpdateSentry404s(Job):
 
         run_every = DAY
+        unreliable = DAY * 3
 
         def job(self):
             update_sentry_404s()
