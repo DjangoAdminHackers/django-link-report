@@ -7,6 +7,7 @@ from django_cron import cronScheduler
 from django_cron import Job
 from django_cron import DAY
 from link_report.utils import update_sentry_404s
+from link_report.link_report_settings import DISABLE_UPDATE_SENTRY_CRON
 
 
 class RunUpdateSentry404s(Job):
@@ -17,4 +18,8 @@ class RunUpdateSentry404s(Job):
         def job(self):
             update_sentry_404s()
 
-cronScheduler.register(RunUpdateSentry404s)
+
+if DISABLE_UPDATE_SENTRY_CRON:
+    pass
+else:
+    cronScheduler.register(RunUpdateSentry404s)
