@@ -72,6 +72,9 @@ def update_sentry_404s():
         issues_response = requests.get(api_url, headers=headers)
         try:
             issues = issues_response.json()
+            if issues is []:
+                # This is a correct response, we have no issues
+                break
         except ValueError:  # ValueError("No JSON object could be decoded")
             # wait a bit and retry, see if it recovers
             issues = None
