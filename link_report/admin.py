@@ -1,4 +1,4 @@
-import link_report_settings
+from . import link_report_settings
 from datetime import timedelta
 from django import forms
 from django.contrib import admin
@@ -67,7 +67,7 @@ class Sentry404IssueAdmin(admin.ModelAdmin):
                 )
             else:
                 sources[source_name] = {'count': 1, 'date_created': item[1]}
-        html = mark_safe(u"""
+        html = mark_safe("""
             <table>
             <thead>
                 <tr>
@@ -75,21 +75,21 @@ class Sentry404IssueAdmin(admin.ModelAdmin):
                 </tr>
             </thead>""")
         html += mark_safe(  # TODO Is mark_safe really safe here?
-            u''.join(
+            ''.join(
                 [
-                    u'<tr><td>{}<td>{}</td><td><a href="{}" target="_blank" title="{}">{}</a></td></tr>'.format(
+                    '<tr><td>{}<td>{}</td><td><a href="{}" target="_blank" title="{}">{}</a></td></tr>'.format(
                         sources[x]['date_created'].strftime('%e/%m/%y'),
                         sources[x]['count'],
                         x,
                         x,
                         truncatechars(x, 40),
                     )
-                    for x in sorted(sources.iterkeys())
+                    for x in sorted(sources.keys())
                 ]
             )
         )
-        html += mark_safe(u'</table>')
-        html += u'<strong>(<a href="{}">{} clicks from {} sources</a>)</strong>'.format(
+        html += mark_safe('</table>')
+        html += '<strong>(<a href="{}">{} clicks from {} sources</a>)</strong>'.format(
             Sentry404Event.get_changelist_url() + '?issue__id__exact={}'.format(obj.pk),
             len(event_list),
             len(sources),
@@ -105,12 +105,12 @@ class Sentry404IssueAdmin(admin.ModelAdmin):
         try:
             redirect = RedirectFacade.objects.get(old_path=old_path)
             return mark_safe(
-                u'<a href="{0}">{0}</a>'.format(redirect.new_path)
+                '<a href="{0}">{0}</a>'.format(redirect.new_path)
             )
         except RedirectFacade.DoesNotExist:
             add_form_url = RedirectFacade.get_addform_url()
             return mark_safe(
-                u'<a href="{}?site={}&old_path={}&_redirect={}">Add a redirect</a>'.format(
+                '<a href="{}?site={}&old_path={}&_redirect={}">Add a redirect</a>'.format(
                     add_form_url,
                     Site.objects.first().pk,
                     old_path,

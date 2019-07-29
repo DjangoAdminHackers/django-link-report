@@ -44,7 +44,7 @@ class Sentry404Event(AdminUrlMixin, models.Model):
     user = models.CharField(max_length=128, null=True, blank=True)
     
     def __unicode__(self):
-        return u'{} on {}'.format(self.issue.url, self.date_created)
+        return '{} on {}'.format(self.issue.url, self.date_created)
     
     class Meta:
         verbose_name = "404 Report"

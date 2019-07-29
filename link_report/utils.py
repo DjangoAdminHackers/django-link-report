@@ -4,7 +4,7 @@ from pprint import pprint
 from link_report import link_report_settings
 import requests
 import time
-from urllib import unquote_plus
+from urllib.parse import unquote_plus
 from django.utils.dateparse import parse_datetime
 from .models import Sentry404Event, Sentry404Issue, IgnoredUrl
 
@@ -58,7 +58,7 @@ def update_sentry_404s():
     # shortIdLookup=0|1
     # limit=[int]
 
-    api_url = u'{}projects/{}/{}/issues/?query={}&sort=date&limit={}'.format(
+    api_url = '{}projects/{}/{}/issues/?query={}&sort=date&limit={}'.format(
         link_report_settings.API_BASE_URL,
         link_report_settings.ORGANIZATION_SLUG,
         link_report_settings.PROJECT_SLUG,
@@ -85,7 +85,7 @@ def update_sentry_404s():
             time.sleep(60)
 
         if not (issues and 'lastSeen' in issues[0]):
-            print 'retrying'
+            print('retrying')
             time.sleep(60)
             continue
 
@@ -95,7 +95,7 @@ def update_sentry_404s():
     ignored_urls = IGNORE_URLS + list(IgnoredUrl.objects.all().values_list('url', flat=True))
     for issue in issues:
         time.sleep(0.5)  # If we request too frequent, it can some times bring down a sentry instance
-        api_url = u'{}issues/{}/events/'.format(
+        api_url = '{}issues/{}/events/'.format(
             link_report_settings.API_BASE_URL,
             issue['id']
         )
@@ -116,7 +116,7 @@ def update_sentry_404s():
                 time.sleep(60)
 
             if not (events and 'tags' in events[0]):
-                print 'retrying'
+                print('retrying')
                 time.sleep(60)
                 continue
 
@@ -172,7 +172,7 @@ def update_sentry_404s():
                 if browser:
                     parts = browser.split()
                     if len(parts) > 1:
-                        browser_type = u' '.join(parts[:-1])
+                        browser_type = ' '.join(parts[:-1])
                     else:
                         browser_type = parts[0]
 
