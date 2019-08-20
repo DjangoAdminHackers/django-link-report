@@ -29,7 +29,7 @@ class Sentry404Issue(AdminUrlMixin, models.Model):
 
 class Sentry404Event(AdminUrlMixin, models.Model):
     
-    issue = models.ForeignKey(Sentry404Issue, related_name='events')
+    issue = models.ForeignKey(Sentry404Issue, related_name='events', on_delete=models.CASCADE)
 
     date_created = models.DateTimeField()
     sentry_id = models.PositiveIntegerField()
