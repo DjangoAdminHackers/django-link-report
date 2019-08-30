@@ -53,6 +53,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='sentry404event',
             name='issue',
-            field=models.ForeignKey(related_name='events', to='link_report.Sentry404Issue'),
+            field=models.ForeignKey(related_name='events', to='link_report.Sentry404Issue', on_delete=models.CASCADE),
         ),
     ]
