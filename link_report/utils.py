@@ -68,7 +68,7 @@ def update_sentry_404s():
     headers = {'Authorization': 'Bearer ' + link_report_settings.AUTH_TOKEN}
     issues_response = requests.get(api_url, headers=headers)
     issues = []
-    while not (issues and 'lastSeen' in issues[0]):
+    while not (issues and 'lastSeen' in issues[0]) and not (issues_response.status_code == 200):
         issues_response = requests.get(api_url, headers=headers)
         try:
             issues = issues_response.json()
