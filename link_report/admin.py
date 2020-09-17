@@ -94,7 +94,7 @@ class Sentry404IssueAdmin(admin.ModelAdmin):
             len(event_list),
             len(sources),
         )
-        return html
+        return mark_safe(html)
     
     display_events.allow_tags = True
     display_events.short_description = 'Linked From'
