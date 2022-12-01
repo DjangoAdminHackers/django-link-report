@@ -165,6 +165,6 @@ class RedirectFacadeAdmin(RedirectableAdmin, admin.ModelAdmin):
     
     def formfield_for_dbfield(self, db_field, **kwargs):
         
-        if db_field.name in ['site', 'old_path']:
+        if db_field.name in ['site']:
             kwargs['widget'] = forms.HiddenInput
         return super(RedirectFacadeAdmin, self).formfield_for_dbfield(db_field, **kwargs)
