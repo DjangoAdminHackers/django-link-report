@@ -10,7 +10,13 @@ from django.utils.safestring import mark_safe
 from ixxy_admin_utils.admin_mixins import RedirectableAdmin
 from ixxy_admin_utils.list_filters import makeRangeFieldListFilter
 from .list_filters import UrlListFilter, RedirectedListFilter
-from .models import Sentry404Issue, Sentry404Event, RedirectFacade, IgnoredUrl
+from .models import (
+    IgnoredUrl,
+    Redirect,
+    RedirectFacade,
+    Sentry404Event,
+    Sentry404Issue,
+)
 
 customDateRangeFilter = makeRangeFieldListFilter([
     ('Last 7 days', timedelta(days=-7), timedelta(days=0)),
@@ -160,11 +166,16 @@ class IgnoredUrlAdmin(admin.ModelAdmin):
     search_fields = ['url',]
 
 
+@admin.register(Redirect)
+class RedirectAdmin(RedirectableAdmin, admin.ModelAdmin):
+    pass
+
+
 @admin.register(RedirectFacade)
 class RedirectFacadeAdmin(RedirectableAdmin, admin.ModelAdmin):
     
     def formfield_for_dbfield(self, db_field, **kwargs):
         
-        if db_field.name in ['site']:
+        if db_field.name in ['site', 'old_path']:
             kwargs['widget'] = forms.HiddenInput
         return super(RedirectFacadeAdmin, self).formfield_for_dbfield(db_field, **kwargs)
