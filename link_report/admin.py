@@ -12,7 +12,6 @@ from ixxy_admin_utils.list_filters import makeRangeFieldListFilter
 from .list_filters import UrlListFilter, RedirectedListFilter
 from .models import (
     IgnoredUrl,
-    Redirect,
     RedirectFacade,
     Sentry404Event,
     Sentry404Issue,
