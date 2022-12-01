@@ -166,11 +166,6 @@ class IgnoredUrlAdmin(admin.ModelAdmin):
     search_fields = ['url',]
 
 
-@admin.register(Redirect)
-class RedirectAdmin(RedirectableAdmin, admin.ModelAdmin):
-    pass
-
-
 @admin.register(RedirectFacade)
 class RedirectFacadeAdmin(RedirectableAdmin, admin.ModelAdmin):
     
